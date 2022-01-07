@@ -17,27 +17,38 @@ struct SeriesRowView: View {
             if let photo = photoViewModel.photo {
                 photo
                     .resizable()
-                    .frame(width: 100, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .aspectRatio(contentMode: .fit)
-                    .padding()
+                    .frame(width: 300, height: 500, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .aspectRatio(contentMode: .fill)
+                    .cornerRadius(15)
                 
             } else {
                 Image(systemName: "photo")
                     .resizable()
-                    .frame(width: 100, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .aspectRatio(contentMode: .fit)
-                    .padding()
+                    .frame(width: 300, height: 500, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .aspectRatio(contentMode: .fill)
             }
             Text("\(serie.title)")
+                .font(.title2)
+                .bold()
+            
+            if let description = serie.description {
+                Text("\(description)")
+                    .font(.caption)
+                    .bold()
+                    .padding()
+            }
+            Divider()
+                
         }
+        .padding(25)
         .onAppear {
-            photoViewModel.loadImage(url: serie.thumbnail.path+".\(serie.thumbnail.thumbnailExtension)")
+            photoViewModel.loadImage(url: serie.thumbnail.path + ".\(serie.thumbnail.thumbnailExtension)")
         }
     }
 }
 
-//struct CharactersRowView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        CharactersRowView(character: Character(id: 1011334, name: "3-D Man", resultDescription: "", modified: ISO8601DateFormatter().date(from: "2014-04-29T14:18:17-0400")!, thumbnail: Thumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784", thumbnailExtension: .jpg), resourceURI: "http://gateway.marvel.com/v1/public/characters/1011334"))
-//    }
-//}
+struct SeriesRowView_Previews: PreviewProvider {
+    static var previews: some View {
+        SeriesRowView(serie: Series(id: 1945, title: "Avengers: The Initiative (2007 - 2010)", description: "Lorem ipsumdolor sit amet", startYear: 2007, endYear: 2010, thumbnail: SeriesThumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/5/a0/514a2ed3302f5", thumbnailExtension: "jpg")))
+    }
+}

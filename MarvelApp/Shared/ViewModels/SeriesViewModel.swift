@@ -9,36 +9,20 @@ import Foundation
 import Combine
 
 class SeriesViewModel: ObservableObject {
-    @Published var series: MarvelSeries?
+    @Published var series: [Series]?
     @Published var status = Status.none
     
-    var character: Character?
-    
     var suscriptors = Set<AnyCancellable>()
-    
-    init(testing: Bool = false) {
-        if (testing) {
-            //getCharactersTesting()
-            
-        } else {
-            getSeriesCharacters()
-        }
-    }
-    
-    func getSeriesCharacters() {
-        self.status = Status.loading
         
+    func getSeriesCharacters(idCharacter: Int) {
+        self.status = Status.loading        
         URLSession.shared
-            .dataTaskPublisher(for: BaseNetwork().getSeriesCharacters(idCharacter: character.id))
+            .dataTaskPublisher(for: BaseNetwork().getSeriesCharacters(idCharacter: idCharacter))
             .tryMap {
                 guard let response = $0.response as? HTTPURLResponse,
                       response.statusCode == 200 else {
                     throw URLError(.badServerResponse)
                 }
-                // el JSON
-//                let m = try? JSONDecoder().decode(Marvel.self, from: $0.data)
-//                print(String(decoding: $0.data, as: UTF8.self))
-//
                 return $0.data
             }
             .decode(type: MarvelSeries.self, decoder: JSONDecoder())
@@ -51,22 +35,24 @@ class SeriesViewModel: ObservableObject {
                     self.status = Status.loaded
                 }
             } receiveValue: { data in
-                self.series = data
+                self.series = data.data.results
             }
             .store(in: &suscriptors)
-
     }
     
     // Testing y Diseño
-//    func getCharactersTesting() {
-//        self.status = Status.loading
-//
-//        let character1 = Character(id: 1011334, name: "3-D Man", resultDescription: "", thumbnail: Thumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784", thumbnailExtension: .jpg), resourceURI: "http://gateway.marvel.com/v1/public/characters/1011334")
-//        let character2 = Character(id: 1017100, name: "A-Bomb (HAS)", resultDescription: "Rick Jones has been Hulk's best bud since day one, but now he's more than a friend...he's a teammate! Transformed by a Gamma energy explosion, A-Bomb's thick, armored skin is just as strong and powerful as it is blue. And when he curls into action, he uses it like a giant bowling ball of destruction!", m, thumbnail: Thumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/3/20/5232158de5b16", thumbnailExtension: .jpg), resourceURI: "http://gateway.marvel.com/v1/public/characters/1017100")
-//        let character3 = Character(id: 1009144, name: "A.I.M.", resultDescription: "AIM is a terrorist organization bent on destroying the world.", , thumbnail: Thumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/6/20/52602f21f29ec", thumbnailExtension: .jpg), resourceURI: "http://gateway.marvel.com/v1/public/characters/1009144")
-//        self.characters = [character1, character2, character3]
-//
-//        self.status = Status.loaded
-//    }
+    func getSeriesTesting() -> Character {
+        return Character(id: 1011334, name: "3-D Man", description: "", thumbnail: Thumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784", thumbnailExtension: .jpg), resourceURI: "http://gateway.marvel.com/v1/public/characters/1011334")
+        /*
+        self.status = Status.loading
+         
+        let serie1 = Series(id: 1945, title: "Avengers: The Initiative (2007 - 2010)", description: "", startYear: 2007, endYear: 2010, thumbnail: SeriesThumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/5/a0/514a2ed3302f5", thumbnailExtension: "jpg"))
+        let serie2 = Series(id: 2005, title: "Deadpool (1997 - 2002)", description: "Wade Wilson: Heartless Merc With a Mouth or...hero? Laugh, cry and applaud at full volume for the mind-bending adventures of Deadpool, exploring the psyche and crazed adventures of Marvel's most unstable personality!", startYear: 1997, endYear: 2002, thumbnail: SeriesThumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/7/03/5130f646465e3", thumbnailExtension: "jpg"))
+        let serie3 = Series(id: 2045, title: "Marvel Premiere (1972 - 1981)", description: "", startYear: 1972, endYear: 1981, thumbnail: SeriesThumbnail(path: "http://i.annihil.us/u/prod/marvel/i/mg/4/40/5a98437953d4e", thumbnailExtension: "jpg"))
+        self.series = [serie1, serie2, serie3]
+
+        self.status = Status.loaded
+         */
+    }
 }
 

@@ -27,16 +27,16 @@ struct Series: Codable, Identifiable {
     let id: Int
     let title: String
     let description: String?
-    let resourceURI: String
-    let urls: [URLElement]
+    //let resourceURI: String
+    //let urls: [URLElement]
     let startYear, endYear: Int
-    let rating, type: String
+    //let rating, type: String
     let thumbnail: SeriesThumbnail
-    let creators: Creators
-    let characters: SeriesCharacters
-    let stories: Stories
-    let comics, events: SeriesCharacters
-    let next, previous: Next?
+    //let creators: Creators
+    //let characters: SeriesCharacters
+    //let stories: Stories
+    //let comics, events: SeriesCharacters
+    //let next, previous: Next?
 }
 
 // MARK: - Characters
